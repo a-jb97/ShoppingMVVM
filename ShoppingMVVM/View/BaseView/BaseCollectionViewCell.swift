@@ -30,6 +30,6 @@ class BaseCollectionViewCell: UICollectionViewCell, ViewDesignProtocol {
     }
     
     func configureView() {
-        contentView.backgroundColor = .white
+        contentView.backgroundColor = .black
     }
 }

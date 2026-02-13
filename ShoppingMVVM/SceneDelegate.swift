@@ -20,7 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: scene)
         
-        let shoppingVC = ShoppingViewController()
+        let shoppingVC = UINavigationController(rootViewController: ShoppingViewController())
         
         window?.rootViewController = shoppingVC
         window?.makeKeyAndVisible()
