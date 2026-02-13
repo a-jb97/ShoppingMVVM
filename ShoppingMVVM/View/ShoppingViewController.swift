@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  ShoppingViewController.swift
 //  ShoppingMVVM
 //
 //  Created by 전민돌 on 2/13/26.
@@ -7,13 +7,11 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ShoppingViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
+        view.backgroundColor = .systemBlue
     }
-
-
 }
-
