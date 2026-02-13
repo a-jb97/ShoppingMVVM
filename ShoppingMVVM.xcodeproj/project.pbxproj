@@ -10,10 +10,12 @@
 		9E80D9442F3F055400AD7F0B /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9E80D9432F3F055400AD7F0B /* SnapKit */; };
 		9E80D9472F3F056700AD7F0B /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 9E80D9462F3F056700AD7F0B /* Kingfisher */; };
 		9E80D94A2F3F057600AD7F0B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 9E80D9492F3F057600AD7F0B /* Alamofire */; };
+		9E80D9C82F3F096300AD7F0B /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 9E80D9C72F3F096300AD7F0B /* .gitignore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9E80D92A2F3F04A700AD7F0B /* ShoppingMVVM.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShoppingMVVM.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E80D9C72F3F096300AD7F0B /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -54,6 +56,7 @@
 		9E80D9212F3F04A700AD7F0B = {
 			isa = PBXGroup;
 			children = (
+				9E80D9C72F3F096300AD7F0B /* .gitignore */,
 				9E80D92C2F3F04A700AD7F0B /* ShoppingMVVM */,
 				9E80D92B2F3F04A700AD7F0B /* Products */,
 			);
@@ -139,6 +142,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E80D9C82F3F096300AD7F0B /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

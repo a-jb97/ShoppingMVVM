@@ -31,4 +31,8 @@ class BaseViewController: UIViewController, ViewDesignProtocol {
     func keyboardDismiss() {
         view.endEditing(true)
     }
+    
+    func changeNavTitleColor() {
+        self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+    }
 }
