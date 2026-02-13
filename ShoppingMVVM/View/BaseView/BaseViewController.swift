@@ -35,4 +35,10 @@ class BaseViewController: UIViewController, ViewDesignProtocol {
     func changeNavTitleColor() {
         self.navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
     }
+    
+    func showAlert(message: String) {
+        let alert = Alert.shared.makeAlert(message: message)
+        
+        self.present(alert, animated: true)
+    }
 }
