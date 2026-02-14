@@ -18,12 +18,6 @@ class ShoppingDetailViewController: BaseViewController {
         
         return label
     }()
-    enum Sort: String {
-        case sim = "sim"
-        case date = "date"
-        case dsc = "dsc"
-        case asc = "asc"
-    }
     let sortAccuracyButton = SortButton(title: "정확도")
     let sortDateButton = SortButton(title: "날짜순")
     let sortHighPriceButton = SortButton(title: "가격높은순")
@@ -40,10 +34,13 @@ class ShoppingDetailViewController: BaseViewController {
         return collectionView
     }()
     
-    var productList: [ShoppingDetail] = []
-    var start = 1
-    var total = 0
-    var sortStatus: Sort = .sim
+    var viewModel = ShoppingDetailViewModel()
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        selectedButtonUI(selectedButton: sortAccuracyButton)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -53,7 +50,22 @@ class ShoppingDetailViewController: BaseViewController {
         sortHighPriceButton.addTarget(self, action: #selector(sortHighPriceButtonTapped), for: .touchUpInside)
         sortLowPriceButton.addTarget(self, action: #selector(sortLowPriceButtonTapped), for: .touchUpInside)
         
-        selectedButtonUI(selectedButton: sortAccuracyButton)
+        viewModel.keyword.bind { [weak self] value in
+            self?.navigationItem.title = value
+        }
+        
+        viewModel.productList.lazyBind { [weak self] _ in
+            // MARK: collectionView 리로드, 최상단으로 스크롤
+            self?.shoppingCollectionView.reloadData()
+        }
+        
+        viewModel.total.bind { [weak self] value in
+            self?.totalLabel.text = "\(value.formatted()) 개의 검색 결과"
+        }
+        
+        viewModel.failNetworking.lazyBind { error in
+            self.showAlert(message: error!.description)
+        }
     }
     
     static func layout() -> UICollectionViewFlowLayout {
@@ -99,63 +111,34 @@ class ShoppingDetailViewController: BaseViewController {
     }
     
     @objc private func sortAccuracyButtonTapped() {
-        sortStatus = .sim
-        start = 1
+        viewModel.start.value = 1
+        viewModel.sortStatus.value = .sim
         
-        NetworkManager.shared.callRequest(query: navigationItem.title!, start: start, sort: Sort.sim.rawValue, type: Shopping.self) { shopping in
-            self.networkingResultButtonTapped(value: shopping)
-            self.selectedButtonUI(selectedButton: self.sortAccuracyButton)
-        } failure: { networkError in
-            self.showAlert(message: networkError.description)
-        }
+        self.selectedButtonUI(selectedButton: self.sortAccuracyButton)
+        self.shoppingCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
     }
     
     @objc private func sortDateButtonTapped() {
-        sortStatus = .date
-        start = 1
+        viewModel.start.value = 1
+        viewModel.sortStatus.value = .date
         
-        NetworkManager.shared.callRequest(query: navigationItem.title!, start: start, sort: Sort.date.rawValue, type: Shopping.self) { shopping in
-            self.networkingResultButtonTapped(value: shopping)
-            self.selectedButtonUI(selectedButton: self.sortDateButton)
-        } failure: { networkError in
-            self.showAlert(message: networkError.description)
-        }
+        self.selectedButtonUI(selectedButton: self.sortDateButton)
+        self.shoppingCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
     }
     
     @objc private func sortHighPriceButtonTapped() {
-        sortStatus = .dsc
-        start = 1
+        viewModel.start.value = 1
+        viewModel.sortStatus.value = .dsc
         
-        NetworkManager.shared.callRequest(query: navigationItem.title!, start: start, sort: Sort.dsc.rawValue, type: Shopping.self) { shopping in
-            self.networkingResultButtonTapped(value: shopping)
-            self.selectedButtonUI(selectedButton: self.sortHighPriceButton)
-        } failure: { networkError in
-            self.showAlert(message: networkError.description)
-        }
+        self.selectedButtonUI(selectedButton: self.sortHighPriceButton)
+        self.shoppingCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
     }
     
     @objc private func sortLowPriceButtonTapped() {
-        sortStatus = .asc
-        start = 1
+        viewModel.start.value = 1
+        viewModel.sortStatus.value = .asc
         
-        NetworkManager.shared.callRequest(query: navigationItem.title!, start: start, sort: Sort.asc.rawValue, type: Shopping.self) { shopping in
-            self.networkingResultButtonTapped(value: shopping)
-            self.selectedButtonUI(selectedButton: self.sortLowPriceButton)
-        } failure: { networkError in
-            self.showAlert(message: networkError.description)
-        }
-    }
-    
-    private func networkingResultButtonTapped(value: Shopping) {
-        self.productList = value.items
-        self.total = value.total
-        self.totalLabel.text = "\(value.total.formatted()) 개의 검색 결과"
-        self.updateScrollTopCollectionView()
-    }
-    
-    // MARK: collectionView 리로드, 최상단으로 스크롤
-    private func updateScrollTopCollectionView() {
-        self.shoppingCollectionView.reloadData()
+        self.selectedButtonUI(selectedButton: self.sortLowPriceButton)
         self.shoppingCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
     }
     
@@ -167,7 +150,6 @@ class ShoppingDetailViewController: BaseViewController {
         view.addSubview(sortLowPriceButton)
         view.addSubview(shoppingCollectionView)
     }
-    
     override func configureLayout() {
         totalLabel.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
@@ -208,14 +190,14 @@ class ShoppingDetailViewController: BaseViewController {
 
 extension ShoppingDetailViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if start > 90 {
+        if viewModel.start.value > 90 {
             return
         } else {
-            if indexPath.item == (productList.count - 1) && productList.count <= total {
-                start += 30
+            if indexPath.item == (viewModel.productList.value.count - 1) && viewModel.productList.value.count <= viewModel.total.value {
+                viewModel.start.value += 30
                 
-                NetworkManager.shared.callRequest(query: navigationItem.title!, start: start, sort: sortStatus.rawValue, type: Shopping.self) { shopping in
-                    self.productList.append(contentsOf: shopping.items)
+                NetworkManager.shared.callRequest(query: viewModel.keyword.value, start: viewModel.start.value, sort: viewModel.sortStatus.value.rawValue, type: Shopping.self) { shopping in
+                    self.viewModel.productList.value.append(contentsOf: shopping.items)
                     collectionView.reloadData()
                 } failure: { networkError in
                     self.showAlert(message: networkError.description)
@@ -225,16 +207,16 @@ extension ShoppingDetailViewController: UICollectionViewDelegate, UICollectionVi
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return productList.count
+        return viewModel.productList.value.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = collectionView.dequeueReusableCell(withReuseIdentifier: ShoppingCollectionViewCell.identifier, for: indexPath) as! ShoppingCollectionViewCell
-        let intLPrice = Int(productList[indexPath.row].lprice)
+        let intLPrice = Int(viewModel.productList.value[indexPath.row].lprice)
         
-        item.productImageView.kf.setImage(with: URL(string: productList[indexPath.row].image))
-        item.mallNameLabel.text = productList[indexPath.row].mallName
-        item.titleLabel.text = productList[indexPath.row].title
+        item.productImageView.kf.setImage(with: URL(string: viewModel.productList.value[indexPath.row].image))
+        item.mallNameLabel.text = viewModel.productList.value[indexPath.row].mallName
+        item.titleLabel.text = viewModel.productList.value[indexPath.row].title
         item.priceLabel.text = "\(intLPrice!.formatted())"
         
         return item

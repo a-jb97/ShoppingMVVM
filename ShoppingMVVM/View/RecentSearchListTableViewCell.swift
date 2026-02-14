@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class recentSearchListTableViewCell: BaseTableViewCell {
+class RecentSearchListTableViewCell: BaseTableViewCell {
     var buttonTap: (() -> Void)?
     
     let magnifyImageView = {
