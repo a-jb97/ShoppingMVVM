@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class RecentSearchTableViewCell: BaseTableViewCell {
+final class RecentSearchTableViewCell: BaseTableViewCell {
     var buttonTap: (() -> Void)?
     
     let recentSearchLabel = {
