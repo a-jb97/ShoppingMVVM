@@ -74,6 +74,8 @@ final class ShoppingCollectionViewCell: BaseCollectionViewCell {
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         self.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
         self.likeButton.tintColor = .black
     }
