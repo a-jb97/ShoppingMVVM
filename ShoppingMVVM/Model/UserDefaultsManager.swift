@@ -23,7 +23,7 @@ class UserDefaultsManager {
     static var searchKeywords: [String]
     
     @UserDefault(key: "isLike", value: [])
-    static var isLike: [String]
+    static var likeIds: [String]
     
     // MARK: 최근 검색어 저장
     static func appendKeyword(_ keyword: String) {
