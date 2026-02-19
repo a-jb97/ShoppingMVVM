@@ -7,24 +7,40 @@
 
 import Foundation
 
-final class ShoppingViewModel {
-    var shoppingSearchKeyword: Observable<String?> = Observable(nil)
-    var recentSearchKeyword: Observable<String?> = Observable(nil)
-    var successNetworking: Observable<Shopping?> = Observable(nil)
-    var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)
-    var notTwoWord = Observable(())
+final class ShoppingViewModel: BaseViewModel {
+    var input: Input
+    var output: Output
     
-    var removeAllButtonTap = Observable(())
-    var removeButtonTap = Observable(0)
+    struct Input {
+        var shoppingSearchKeyword: Observable<String?> = Observable(nil)
+        var recentSearchKeyword: Observable<String?> = Observable(nil)
+        var removeAllButtonTap = Observable(())
+        var removeButtonTap = Observable(0)
+    }
     
-    init() {
-        shoppingSearchKeyword.lazyBind { value in
+    struct Output {
+        var successNetworking: Observable<Shopping?> = Observable(nil)
+        var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)
+    }
+    
+    func transform() {
+        input.shoppingSearchKeyword.lazyBind { value in
             self.search(keyword: value ?? "")
         }
         
-        recentSearchKeyword.lazyBind { value in
+        input.recentSearchKeyword.lazyBind { value in
             self.search(keyword: value ?? "")
         }
+    }
+    
+    
+    var notTwoWord = Observable(())
+    
+    init() {
+        input = Input()
+        output = Output()
+        
+        transform()
     }
     
     func search(keyword: String) {
@@ -38,10 +54,10 @@ final class ShoppingViewModel {
             }
             
             NetworkManager.shared.callRequest(query: keyword, start: 1, sort: "sim", type: Shopping.self) { shopping in
-                self.successNetworking.value = shopping
+                self.output.successNetworking.value = shopping
                 
             } failure: { networkError in
-                self.failNetworking.value = networkError
+                self.output.failNetworking.value = networkError
             }
             
         } else {
