@@ -54,6 +54,34 @@ final class ShoppingCollectionViewCell: BaseCollectionViewCell {
         return label
     }()
     
+    let viewModel = ShoppingCollectionViewModel()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        likeButton.addTarget(self, action: #selector(likeButtonTapped), for: .touchUpInside)
+        
+        viewModel.output.isLike.bind { isLike in
+            if isLike {
+                self.likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+                self.likeButton.tintColor = .accent
+
+            } else {
+                self.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+                self.likeButton.tintColor = .black
+            }
+        }
+    }
+    
+    override func prepareForReuse() {
+        self.likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        self.likeButton.tintColor = .black
+    }
+    
+    @objc private func likeButtonTapped() {
+        viewModel.input.likeTap.value = ()
+    }
+    
     override func configureHierarchy() {
         contentView.addSubview(productImageView)
         contentView.addSubview(likeButton)
@@ -61,7 +89,6 @@ final class ShoppingCollectionViewCell: BaseCollectionViewCell {
         contentView.addSubview(titleLabel)
         contentView.addSubview(priceLabel)
     }
-    
     override func configureLayout() {
         productImageView.snp.makeConstraints { make in
             make.top.equalTo(contentView.safeAreaLayoutGuide)

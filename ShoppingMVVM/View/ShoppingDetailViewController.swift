@@ -219,6 +219,7 @@ extension ShoppingDetailViewController: UICollectionViewDelegate, UICollectionVi
         item.mallNameLabel.text = viewModel.output.productList.value[indexPath.row].mallName
         item.titleLabel.text = viewModel.output.productList.value[indexPath.row].title
         item.priceLabel.text = "\(intLPrice!.formatted())"
+        item.viewModel.input.productId.value = viewModel.output.productList.value[indexPath.row].productId
         
         return item
     }

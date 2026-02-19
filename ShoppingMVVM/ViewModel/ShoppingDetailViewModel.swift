@@ -17,10 +17,10 @@ final class ShoppingDetailViewModel: BaseViewModel {
     
     struct Input {
         var keyword: Observable<String> = Observable("")
-        var sortAccuracy: Observable = Observable(())
-        var sortDate: Observable = Observable(())
-        var sortHighPrice: Observable = Observable(())
-        var sortLowPrice: Observable = Observable(())
+        var sortAccuracy = Observable(())
+        var sortDate = Observable(())
+        var sortHighPrice = Observable(())
+        var sortLowPrice = Observable(())
         var start: Observable<Int> = Observable(1)
         var total: Observable<Int> = Observable(0)
         var sortStatus: Observable<Sort> = Observable(.sim)
@@ -28,7 +28,7 @@ final class ShoppingDetailViewModel: BaseViewModel {
     
     struct Output {
         var productList: Observable<[ShoppingDetail]> = Observable([])
-        var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)
+        var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)        
     }
     
     var input: Input
