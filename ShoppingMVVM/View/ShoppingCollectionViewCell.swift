@@ -23,7 +23,6 @@ final class ShoppingCollectionViewCell: BaseCollectionViewCell {
         let button = UIButton()
         
         button.setImage(UIImage(systemName: "heart"), for: .normal)
-        button.setImage(UIImage(systemName: "heart.fill"), for: .selected)
         button.tintColor = .black
         button.backgroundColor = .white
         button.clipsToBounds = true
