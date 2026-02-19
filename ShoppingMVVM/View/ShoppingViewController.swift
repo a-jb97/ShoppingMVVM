@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 import Alamofire
 
-class ShoppingViewController: BaseViewController {
-    lazy var shoppingSearchBar = {
+final class ShoppingViewController: BaseViewController {
+    private lazy var shoppingSearchBar = {
         let searchBar = UISearchBar()
         
         searchBar.delegate = self
