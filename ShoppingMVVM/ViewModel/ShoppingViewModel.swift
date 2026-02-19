@@ -21,6 +21,7 @@ final class ShoppingViewModel: BaseViewModel {
     struct Output {
         var successNetworking: Observable<Shopping?> = Observable(nil)
         var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)
+        var notTwoWord = Observable(())
     }
     
     func transform() {
@@ -32,9 +33,6 @@ final class ShoppingViewModel: BaseViewModel {
             self.search(keyword: value ?? "")
         }
     }
-    
-    
-    var notTwoWord = Observable(())
     
     init() {
         input = Input()
@@ -61,7 +59,7 @@ final class ShoppingViewModel: BaseViewModel {
             }
             
         } else {
-            self.notTwoWord.value = ()
+            self.output.notTwoWord.value = ()
         }
     }
 }

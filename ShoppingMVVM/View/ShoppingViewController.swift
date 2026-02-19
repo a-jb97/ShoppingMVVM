@@ -46,7 +46,7 @@ class ShoppingViewController: BaseViewController {
         
         let vc = ShoppingDetailViewController()
         
-        viewModel.successNetworking.lazyBind { shopping in
+        viewModel.output.successNetworking.lazyBind { shopping in
             vc.viewModel.keyword.value = self.shoppingSearchBar.text!
             vc.viewModel.total.value = shopping!.total
             vc.viewModel.productList.value = shopping!.items
@@ -54,23 +54,23 @@ class ShoppingViewController: BaseViewController {
             self.navigationController?.pushViewController(vc, animated: true)
         }
         
-        viewModel.failNetworking.lazyBind { error in
+        viewModel.output.failNetworking.lazyBind { error in
             self.showAlert(message: error!.description)
         }
         
-        viewModel.removeAllButtonTap.lazyBind { _ in
+        viewModel.input.removeAllButtonTap.lazyBind { _ in
             UserDefaultsManager.searchKeywords.removeAll()
             
             self.recentSearchTableView.reloadData()
         }
         
-        viewModel.removeButtonTap.lazyBind { index in
+        viewModel.input.removeButtonTap.lazyBind { index in
             UserDefaultsManager.searchKeywords.remove(at: index)
             
             self.recentSearchTableView.reloadData()
         }
         
-        viewModel.notTwoWord.lazyBind { _ in
+        viewModel.output.notTwoWord.lazyBind { _ in
             self.showAlert(message: "2글자 이상 검색해주세요!")
         }
     }
@@ -101,7 +101,7 @@ class ShoppingViewController: BaseViewController {
 
 extension ShoppingViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        viewModel.shoppingSearchKeyword.value = searchBar.text
+        viewModel.input.shoppingSearchKeyword.value = searchBar.text
     }
 }
 
@@ -117,7 +117,7 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource {
             let cell = tableView.dequeueReusableCell(withIdentifier: RecentSearchTableViewCell.identifier, for: indexPath) as! RecentSearchTableViewCell
             
             cell.buttonTap = { [weak self] in
-                self?.viewModel.removeAllButtonTap.value = ()
+                self?.viewModel.input.removeAllButtonTap.value = ()
             }
             
             cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
@@ -132,7 +132,7 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource {
             cell.keywordLabel.text = UserDefaultsManager.searchKeywords[indexPath.row - 1]
             
             cell.buttonTap = { [weak self] in
-                self?.viewModel.removeButtonTap.value = indexPath.row - 1
+                self?.viewModel.input.removeButtonTap.value = indexPath.row - 1
             }
             
             return cell
@@ -142,6 +142,6 @@ extension ShoppingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         shoppingSearchBar.text = UserDefaultsManager.searchKeywords[indexPath.row - 1]
         
-        viewModel.recentSearchKeyword.value = shoppingSearchBar.text
+        viewModel.input.recentSearchKeyword.value = shoppingSearchBar.text
     }
 }
