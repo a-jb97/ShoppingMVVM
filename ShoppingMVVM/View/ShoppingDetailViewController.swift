@@ -40,6 +40,7 @@ final class ShoppingDetailViewController: BaseViewController {
         super.viewWillAppear(animated)
         
         selectedButtonUI(selectedButton: sortAccuracyButton)
+        self.shoppingCollectionView.scrollToItem(at: IndexPath(item: 0, section: 0), at: .top, animated: false)
     }
     
     override func viewDidLoad() {
