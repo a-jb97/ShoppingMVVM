@@ -47,9 +47,9 @@ class ShoppingViewController: BaseViewController {
         let vc = ShoppingDetailViewController()
         
         viewModel.output.successNetworking.lazyBind { shopping in
-            vc.viewModel.keyword.value = self.shoppingSearchBar.text!
-            vc.viewModel.total.value = shopping!.total
-            vc.viewModel.productList.value = shopping!.items
+            vc.viewModel.input.keyword.value = self.shoppingSearchBar.text!
+            vc.viewModel.input.total.value = shopping!.total
+            vc.viewModel.output.productList.value = shopping!.items
             
             self.navigationController?.pushViewController(vc, animated: true)
         }
