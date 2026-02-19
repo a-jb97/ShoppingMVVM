@@ -9,8 +9,8 @@ import UIKit
 import SnapKit
 import Kingfisher
 
-class ShoppingDetailViewController: BaseViewController {
-    let totalLabel = {
+final class ShoppingDetailViewController: BaseViewController {
+    private let totalLabel = {
         let label = UILabel()
         
         label.font = .boldSystemFont(ofSize: 14)
@@ -18,10 +18,10 @@ class ShoppingDetailViewController: BaseViewController {
         
         return label
     }()
-    let sortAccuracyButton = SortButton(title: "정확도")
-    let sortDateButton = SortButton(title: "날짜순")
-    let sortHighPriceButton = SortButton(title: "가격높은순")
-    let sortLowPriceButton = SortButton(title: "가격낮은순")
+    private let sortAccuracyButton = SortButton(title: "정확도")
+    private let sortDateButton = SortButton(title: "날짜순")
+    private let sortHighPriceButton = SortButton(title: "가격높은순")
+    private let sortLowPriceButton = SortButton(title: "가격낮은순")
     lazy var shoppingCollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: ShoppingDetailViewController.layout())
         
@@ -68,7 +68,7 @@ class ShoppingDetailViewController: BaseViewController {
         }
     }
     
-    static func layout() -> UICollectionViewFlowLayout {
+    private static func layout() -> UICollectionViewFlowLayout {
         let layout = UICollectionViewFlowLayout()
         
         let inset: CGFloat = 16
