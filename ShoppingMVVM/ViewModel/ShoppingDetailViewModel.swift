@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class ShoppingDetailViewModel {
+final class ShoppingDetailViewModel: BaseViewModel {
     enum Sort: String {
         case sim = "sim"
         case date = "date"
@@ -15,34 +15,46 @@ final class ShoppingDetailViewModel {
         case asc = "asc"
     }
     
-    var keyword: Observable<String> = Observable("")
+    struct Input {
+        var keyword: Observable<String> = Observable("")
+        var sortAccuracy: Observable = Observable(())
+        var sortDate: Observable = Observable(())
+        var sortHighPrice: Observable = Observable(())
+        var sortLowPrice: Observable = Observable(())
+        var start: Observable<Int> = Observable(1)
+        var total: Observable<Int> = Observable(0)
+        var sortStatus: Observable<Sort> = Observable(.sim)
+    }
     
-    var sortAccuracy: Observable = Observable(())
-    var sortDate: Observable = Observable(())
-    var sortHighPrice: Observable = Observable(())
-    var sortLowPrice: Observable = Observable(())
+    struct Output {
+        var productList: Observable<[ShoppingDetail]> = Observable([])
+        var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)
+    }
     
-    var productList: Observable<[ShoppingDetail]> = Observable([])
-    var start: Observable<Int> = Observable(1)
-    var total: Observable<Int> = Observable(0)
-    var sortStatus: Observable<Sort> = Observable(.sim)
-    
-    var failNetworking: Observable<NetworkManager.NetworkError?> = Observable(nil)
+    var input: Input
+    var output: Output
     
     init() {
-        sortStatus.lazyBind { _ in
+        input = Input()
+        output = Output()
+        
+        transform()
+    }
+    
+    func transform() {
+        input.sortStatus.lazyBind { _ in
             self.searchKeyword()
         }
     }
     
     func searchKeyword() {
-        NetworkManager.shared.callRequest(query: self.keyword.value, start: self.start.value, sort: sortStatus.value.rawValue, type: Shopping.self) { shopping in
-            self.productList.value = shopping.items
+        NetworkManager.shared.callRequest(query: self.input.keyword.value, start: self.input.start.value, sort: input.sortStatus.value.rawValue, type: Shopping.self) { shopping in
+            self.output.productList.value = shopping.items
             
-            self.total.value = shopping.total
+            self.input.total.value = shopping.total
 
         } failure: { networkError in
-            self.failNetworking.value = networkError
+            self.output.failNetworking.value = networkError
         }
     }
 }
